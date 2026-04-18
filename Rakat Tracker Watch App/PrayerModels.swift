@@ -1,6 +1,6 @@
 //
 //  PrayerModels.swift
-//  Rakat Tracker Watch App (duplicate of iOS model — keep in sync)
+//  Rakat Tracker Watch App — keep in sync with iOS Rakat Tracker/PrayerModels.swift
 //
 
 import Foundation
@@ -21,11 +21,13 @@ enum RakatTheme {
     static let textPrimary = Color(red: 0.15, green: 0.22, blue: 0.32)
     static let textSecondary = Color(red: 0.38, green: 0.46, blue: 0.56)
     static let complete = Color(red: 0.30, green: 0.62, blue: 0.55)
+    static let sunnahGoldTop = Color(red: 1.0, green: 0.88, blue: 0.45)
+    static let sunnahGoldMid = Color(red: 0.92, green: 0.72, blue: 0.22)
+    static let sunnahGoldBottom = Color(red: 0.78, green: 0.55, blue: 0.12)
 }
 
 // MARK: - Prayer metadata (targets)
 
-/// Canonical rakat targets for the five daily prayers (fard + emphasized sunnah where commonly practiced).
 enum PrayerKind: String, CaseIterable, Identifiable {
     case fajr
     case dhuhr
@@ -73,9 +75,34 @@ enum PrayerKind: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Total rakat expected for this prayer (sunnah + fard).
     var totalTargetRakats: Int {
         sunnahBeforeTarget + fardTarget + sunnahAfterTarget
+    }
+
+    var sunnahTargetTotal: Int {
+        sunnahBeforeTarget + sunnahAfterTarget
+    }
+
+    func completedFardRakats(binding: PrayerProgressBinding) -> Int {
+        min(binding.fard, fardTarget)
+    }
+
+    func completedSunnahRakats(binding: PrayerProgressBinding) -> Int {
+        var n = 0
+        if sunnahBeforeTarget > 0 { n += min(binding.sunnahBefore, sunnahBeforeTarget) }
+        if sunnahAfterTarget > 0 { n += min(binding.sunnahAfter, sunnahAfterTarget) }
+        return n
+    }
+
+    func isFardComplete(binding: PrayerProgressBinding) -> Bool {
+        binding.fard >= fardTarget
+    }
+
+    func isSunnahComplete(binding: PrayerProgressBinding) -> Bool {
+        guard sunnahTargetTotal > 0 else { return false }
+        let beforeOK = sunnahBeforeTarget == 0 || binding.sunnahBefore >= sunnahBeforeTarget
+        let afterOK = sunnahAfterTarget == 0 || binding.sunnahAfter >= sunnahAfterTarget
+        return beforeOK && afterOK
     }
 
     var symbolName: String {
@@ -88,7 +115,6 @@ enum PrayerKind: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Subtle per-prayer tint (still in the blue family).
     var cardAccent: Color {
         switch self {
         case .fajr: return Color(red: 0.45, green: 0.62, blue: 0.82)
@@ -112,31 +138,25 @@ enum PrayerKind: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - Persisted daily state (single row; resets when the calendar day changes)
+// MARK: - Persisted daily state
 
 @Model
 final class RakatTrackerState {
-    /// Start of the calendar day this snapshot applies to (local timezone).
     var dayStart: Date
 
-    // Fajr
     var fajrSunnahBefore: Int
     var fajrFard: Int
 
-    // Dhuhr
     var dhuhrSunnahBefore: Int
     var dhuhrFard: Int
     var dhuhrSunnahAfter: Int
 
-    // Asr
     var asrSunnahBefore: Int
     var asrFard: Int
 
-    // Maghrib
     var maghribFard: Int
     var maghribSunnahAfter: Int
 
-    // Isha
     var ishaSunnahBefore: Int
     var ishaFard: Int
     var ishaSunnahAfter: Int
@@ -178,7 +198,6 @@ final class RakatTrackerState {
     }
 }
 
-/// Lightweight accessor so views can read/write per-prayer fields without huge switch duplication in the view.
 struct PrayerProgressBinding {
     let prayer: PrayerKind
     private let state: RakatTrackerState
@@ -260,8 +279,6 @@ enum DayBoundary {
         Calendar.current.isDate(a, inSameDayAs: b)
     }
 }
-
-// MARK: - Shared day rollover (iOS + watchOS)
 
 enum RakatDaySync {
     @MainActor

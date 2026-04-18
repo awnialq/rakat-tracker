@@ -27,6 +27,7 @@
 		F2DB67382F9330B5003310FA /* Rakat Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rakat Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2DB67472F9330B6003310FA /* Rakat TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Rakat TrackerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2DB67512F9330B6003310FA /* Rakat TrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Rakat TrackerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2DB69002F9330B5003310FA /* RakatTrackerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RakatTrackerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -74,6 +75,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F2DB69032F9330B5003310FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				F2DB67382F9330B5003310FA /* Rakat Tracker.app */,
+				F2DB69002F9330B5003310FA /* RakatTrackerWatch.app */,
 				F2DB67472F9330B6003310FA /* Rakat TrackerTests.xctest */,
 				F2DB67512F9330B6003310FA /* Rakat TrackerUITests.xctest */,
 			);
@@ -169,6 +178,28 @@
 			productReference = F2DB67512F9330B6003310FA /* Rakat TrackerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		F2DB69012F9330B5003310FA /* RakatTrackerWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F2DB69072F9330B6003310FA /* Build configuration list for PBXNativeTarget "RakatTrackerWatch" */;
+			buildPhases = (
+				F2DB69022F9330B5003310FA /* Sources */,
+				F2DB69032F9330B5003310FA /* Frameworks */,
+				F2DB69042F9330B5003310FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F2DB68012F9330B5003310FA /* Rakat Tracker Watch App */,
+			);
+			name = RakatTrackerWatch;
+			packageProductDependencies = (
+			);
+			productName = RakatTrackerWatch;
+			productReference = F2DB69002F9330B5003310FA /* RakatTrackerWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -190,6 +221,9 @@
 						CreatedOnToolsVersion = 26.4.1;
 						TestTargetID = F2DB67372F9330B5003310FA;
 					};
+					F2DB69012F9330B5003310FA = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
 				};
 			};
 			buildConfigurationList = F2DB67332F9330B5003310FA /* Build configuration list for PBXProject "Rakat Tracker" */;
@@ -207,6 +241,7 @@
 			projectRoot = "";
 			targets = (
 				F2DB67372F9330B5003310FA /* Rakat Tracker */,
+				F2DB69012F9330B5003310FA /* RakatTrackerWatch */,
 				F2DB67462F9330B6003310FA /* Rakat TrackerTests */,
 				F2DB67502F9330B6003310FA /* Rakat TrackerUITests */,
 			);
@@ -235,6 +270,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F2DB69042F9330B5003310FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -253,6 +295,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F2DB674D2F9330B6003310FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F2DB69022F9330B5003310FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -571,6 +620,72 @@
 			};
 			name = Release;
 		};
+		F2DB69052F9330B6003310FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7PBRM79GPT;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rakat Tracker";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "awnialq.Rakat-Tracker.watch";
+				PRODUCT_MODULE_NAME = RakatTrackerWatchKit;
+				PRODUCT_NAME = RakatTrackerWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		F2DB69062F9330B6003310FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7PBRM79GPT;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rakat Tracker";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "awnialq.Rakat-Tracker.watch";
+				PRODUCT_MODULE_NAME = RakatTrackerWatchKit;
+				PRODUCT_NAME = RakatTrackerWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -606,6 +721,15 @@
 			buildConfigurations = (
 				F2DB67622F9330B6003310FA /* Debug */,
 				F2DB67632F9330B6003310FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F2DB69072F9330B6003310FA /* Build configuration list for PBXNativeTarget "RakatTrackerWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F2DB69052F9330B6003310FA /* Debug */,
+				F2DB69062F9330B6003310FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -112,6 +112,36 @@ enum WatchMetrics {
     }
 }
 
+// MARK: - Gold sunnah seal (compact, matches iOS intent)
+
+private struct GoldSunnahSeal: View {
+    let scale: CGFloat
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            RakatTheme.sunnahGoldTop,
+                            RakatTheme.sunnahGoldMid,
+                            RakatTheme.sunnahGoldBottom
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 18 * scale, height: 18 * scale)
+                .shadow(color: RakatTheme.sunnahGoldMid.opacity(0.45), radius: 2 * scale, y: 1 * scale)
+
+            Image(systemName: "checkmark")
+                .font(.system(size: 9 * scale, weight: .bold))
+                .foregroundStyle(.white)
+        }
+        .accessibilityLabel("Sunnah complete")
+    }
+}
+
 // MARK: - List card
 
 private struct WatchPrayerListCard: View {
@@ -120,7 +150,7 @@ private struct WatchPrayerListCard: View {
     let scale: CGFloat
 
     var body: some View {
-        HStack(spacing: 8 * scale) {
+        HStack(alignment: .center, spacing: 8 * scale) {
             ZStack {
                 RoundedRectangle(cornerRadius: 8 * scale, style: .continuous)
                     .fill(
@@ -137,26 +167,39 @@ private struct WatchPrayerListCard: View {
                     .foregroundStyle(prayer.cardAccent)
             }
 
-            VStack(alignment: .leading, spacing: 2 * scale) {
+            VStack(alignment: .leading, spacing: 3 * scale) {
                 Text(prayer.localizedTitle)
                     .font(.system(size: 16 * scale, weight: .semibold, design: .rounded))
                     .foregroundStyle(RakatTheme.textPrimary)
 
-                Text(progressLine)
-                    .font(.system(size: 12 * scale, weight: .medium, design: .rounded))
+                Text(fardProgressLine)
+                    .font(.system(size: 11 * scale, weight: .medium, design: .rounded))
                     .foregroundStyle(RakatTheme.textSecondary)
+
+                if let sunnah = sunnahProgressLine {
+                    Text(sunnah)
+                        .font(.system(size: 11 * scale, weight: .medium, design: .rounded))
+                        .foregroundStyle(RakatTheme.textSecondary)
+                }
             }
 
-            Spacer(minLength: 4 * scale)
+            Spacer(minLength: 2 * scale)
 
-            if prayer.isComplete(binding: binding) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 18 * scale))
-                    .foregroundStyle(RakatTheme.complete)
-            } else {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12 * scale, weight: .semibold))
-                    .foregroundStyle(RakatTheme.accentSecondary.opacity(0.9))
+            HStack(spacing: 5 * scale) {
+                if prayer.isFardComplete(binding: binding) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 16 * scale))
+                        .foregroundStyle(RakatTheme.complete)
+                        .accessibilityLabel("Fard complete")
+                }
+                if prayer.sunnahTargetTotal > 0, prayer.isSunnahComplete(binding: binding) {
+                    GoldSunnahSeal(scale: scale)
+                }
+                if !prayer.isComplete(binding: binding) {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11 * scale, weight: .semibold))
+                        .foregroundStyle(RakatTheme.accentSecondary.opacity(0.9))
+                }
             }
         }
         .padding(10 * scale)
@@ -171,10 +214,15 @@ private struct WatchPrayerListCard: View {
         )
     }
 
-    private var progressLine: String {
-        let done = prayer.completedRakats(binding: binding)
-        let total = prayer.totalTargetRakats
-        return "\(done) / \(total) rakat"
+    private var fardProgressLine: String {
+        let c = prayer.completedFardRakats(binding: binding)
+        return "Fard · \(c)/\(prayer.fardTarget)"
+    }
+
+    private var sunnahProgressLine: String? {
+        guard prayer.sunnahTargetTotal > 0 else { return nil }
+        let c = prayer.completedSunnahRakats(binding: binding)
+        return "Sunnah · \(c)/\(prayer.sunnahTargetTotal)"
     }
 }
 
@@ -247,8 +295,11 @@ struct WatchPrayerDetailView: View {
     }
 
     private func summaryHeader(scale: CGFloat, width: CGFloat) -> some View {
-        let countSize = max(26, min(width * 0.14, 36))
-        VStack(spacing: 6 * scale) {
+        let countSize = max(22, min(width * 0.12, 30))
+        let fardDone = prayer.completedFardRakats(binding: binding)
+        let sunDone = prayer.completedSunnahRakats(binding: binding)
+
+        return VStack(spacing: 6 * scale) {
             ZStack {
                 Circle()
                     .fill(
@@ -271,10 +322,27 @@ struct WatchPrayerDetailView: View {
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
 
-            if prayer.isComplete(binding: binding) {
-                Label("Complete", systemImage: "checkmark.seal.fill")
-                    .font(.system(size: 12 * scale, weight: .semibold, design: .rounded))
-                    .foregroundStyle(RakatTheme.complete)
+            VStack(spacing: 4 * scale) {
+                HStack(spacing: 6 * scale) {
+                    Text("Fard · \(fardDone)/\(prayer.fardTarget)")
+                        .font(.system(size: 12 * scale, weight: .medium, design: .rounded))
+                        .foregroundStyle(RakatTheme.textSecondary)
+                    if prayer.isFardComplete(binding: binding) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 14 * scale))
+                            .foregroundStyle(RakatTheme.complete)
+                    }
+                }
+                if prayer.sunnahTargetTotal > 0 {
+                    HStack(spacing: 6 * scale) {
+                        Text("Sunnah · \(sunDone)/\(prayer.sunnahTargetTotal)")
+                            .font(.system(size: 12 * scale, weight: .medium, design: .rounded))
+                            .foregroundStyle(RakatTheme.textSecondary)
+                        if prayer.isSunnahComplete(binding: binding) {
+                            GoldSunnahSeal(scale: scale * 0.9)
+                        }
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -377,7 +445,20 @@ private func watchHaptic() {
 #endif
 }
 
-#Preview {
+// MARK: - Previews (Editor → Canvas, or ⌥⌘↩ — pick an Apple Watch device in the canvas bar)
+
+#Preview("Watch — list") {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: RakatTrackerState.self, configurations: config)
+    let state = RakatTrackerState(dayStart: .now)
+    state.dhuhrFard = 2
+    state.dhuhrSunnahBefore = 2
+    container.mainContext.insert(state)
+    return WatchRootView()
+        .modelContainer(container)
+}
+
+#Preview("Watch — detail") {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: RakatTrackerState.self, configurations: config)
     let state = RakatTrackerState(dayStart: .now)
