@@ -1,3 +1,7 @@
 Rakat Tracker.xcodeproj/
 Rakat TrackerTests/
 Rakat TrackerUITests/
+
+# Xcode / local build
+build/
+DerivedData/
