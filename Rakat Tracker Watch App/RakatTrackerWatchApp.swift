@@ -1,15 +1,13 @@
 //
-//  Rakat_TrackerApp.swift
-//  Rakat Tracker
-//
-//  Created by Awni AlQuraini on 4/17/26.
+//  RakatTrackerWatchApp.swift
+//  Rakat Tracker Watch App
 //
 
 import SwiftUI
 import SwiftData
 
 @main
-struct Rakat_TrackerApp: App {
+struct RakatTrackerWatchApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             RakatTrackerState.self,
@@ -25,7 +23,7 @@ struct Rakat_TrackerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WatchRootView()
         }
         .modelContainer(sharedModelContainer)
     }
