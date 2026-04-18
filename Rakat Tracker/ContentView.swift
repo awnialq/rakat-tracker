@@ -211,22 +211,26 @@ private struct PrayerListCard: View {
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(RakatTheme.textPrimary)
 
-                Text(progressLine)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(
+                        "Fard · \(prayer.completedFardRakats(binding: binding))/\(prayer.fardTarget)"
+                    )
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(RakatTheme.textSecondary)
+
+                    if prayer.sunnahTargetTotal > 0 {
+                        Text(
+                            "Sunnah · \(prayer.completedSunnahRakats(binding: binding))/\(prayer.sunnahTargetTotal)"
+                        )
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(RakatTheme.textSecondary)
+                    }
+                }
             }
 
             Spacer(minLength: 8)
 
-            if prayer.isComplete(binding: binding) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(RakatTheme.complete)
-            } else {
-                Image(systemName: "chevron.right.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(RakatTheme.accentSecondary.opacity(0.85))
-            }
+            completionTrailing
         }
         .padding(16)
         .background(
@@ -240,10 +244,52 @@ private struct PrayerListCard: View {
         )
     }
 
-    private var progressLine: String {
-        let done = prayer.completedRakats(binding: binding)
-        let total = prayer.totalTargetRakats
-        return "\(done) / \(total) rakat"
+    /// Green when fard is done; gold seal when sunnah is done; chevron when something remains.
+    @ViewBuilder
+    private var completionTrailing: some View {
+        let fardDone = prayer.isFardComplete(binding: binding)
+        let sunnahDone = prayer.isSunnahComplete(binding: binding)
+        let fullyDone = fardDone && (prayer.sunnahTargetTotal == 0 || sunnahDone)
+
+        HStack(spacing: 6) {
+            if fardDone {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(RakatTheme.complete)
+            }
+            if sunnahDone, prayer.sunnahTargetTotal > 0 {
+                GoldSunnahCheckmark()
+            }
+            if !fullyDone {
+                Image(systemName: "chevron.right.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(RakatTheme.accentSecondary.opacity(0.85))
+            }
+        }
+    }
+}
+
+// MARK: - Gold sunnah completion badge
+
+private struct GoldSunnahCheckmark: View {
+    var font: Font = .title2
+
+    var body: some View {
+        Image(systemName: "checkmark.seal.fill")
+            .font(font)
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [
+                        RakatTheme.sunnahGoldTop,
+                        RakatTheme.sunnahGoldMid,
+                        RakatTheme.sunnahGoldBottom,
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .shadow(color: RakatTheme.sunnahGoldTop.opacity(0.85), radius: 4, y: 1)
+            .shadow(color: Color.white.opacity(0.45), radius: 0, y: -1)
     }
 }
 
@@ -324,14 +370,31 @@ struct PrayerDetailView: View {
                     .foregroundStyle(prayer.cardAccent)
             }
 
-            Text("\(prayer.completedRakats(binding: binding)) / \(prayer.totalTargetRakats) rakat today")
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(RakatTheme.textPrimary)
+            VStack(spacing: 6) {
+                Text("Fard · \(prayer.completedFardRakats(binding: binding))/\(prayer.fardTarget)")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(RakatTheme.textPrimary)
+                if prayer.sunnahTargetTotal > 0 {
+                    Text("Sunnah · \(prayer.completedSunnahRakats(binding: binding))/\(prayer.sunnahTargetTotal)")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(RakatTheme.textPrimary)
+                }
+            }
 
-            if prayer.isComplete(binding: binding) {
-                Label("Complete for this prayer", systemImage: "checkmark.seal.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(RakatTheme.complete)
+            HStack(spacing: 14) {
+                if prayer.isFardComplete(binding: binding) {
+                    Label("Fard complete", systemImage: "checkmark.circle.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(RakatTheme.complete)
+                }
+                if prayer.isSunnahComplete(binding: binding), prayer.sunnahTargetTotal > 0 {
+                    HStack(spacing: 6) {
+                        GoldSunnahCheckmark(font: .body)
+                        Text("Sunnah complete")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(RakatTheme.textPrimary)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity)
